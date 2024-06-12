@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+    <style>
+        .container {
+            position: relative;
+        }
+
+        .background-clip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 20px;
+            justify-items: center;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+
+        .content a {
+            width: 100%;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2em;
+            display: block;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .content {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            border-radius: 15px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal button {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .modal button:hover {
+            background-color: #ddd;
+        }
+
+        .modal a {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .modal a:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.history.back()" style="padding: 10px 20px; margin-top: 20px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer;">Retour</button>
+    
+    <div class="container">
+        <video autoplay loop muted plays-inline class="background-clip">
+            <source src="images/video.mp4" type="video/mp4">
+        </video>
+
+        <div class="content">
+            <a href="#" onclick="selectSubject('Programmation Système')">Programmation Système</a>
+            <a href="#" onclick="selectSubject('Système dexploitation avancée(Linux)')">Système d'exploitation avancée(Linux)</a>
+            <a href="#" onclick="selectSubject('Réseaux et Technologie CISCO CCNA 3')">Réseaux et Technologie CISCO CCNA 3</a>
+            <a href="#" onclick="selectSubject('Huawei Certification Network Association')">Huawei Certification Network Association</a>
+            <a href="#" onclick="selectSubject('Administration des Réseaux')">Administration des Réseaux</a>
+            <a href="#" onclick="selectSubject('Administration des Systèmes')">Administration des Systèmes</a>
+            <a href="#" onclick="selectSubject('Big Data')">Big Data</a>
+            <a href="#" onclick="selectSubject('Sécurité des Réseaux')">Sécurité des Réseaux</a>
+            <a href="#" onclick="selectSubject('Anglais Expert')">Anglais Expert</a>
+            <a href="#" onclick="selectSubject('Préparation au TOEIC')">Préparation au TOEIC</a>
+            <a href="#" onclick="selectSubject('Developpement Personnel')">Developpement Personnel</a>
+        </div>
+    </div>
+
+    <!-- Modal for Year Selection -->
+    <div id="yearModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('yearModal')">&times;</span>
+            <p id="yearModalText">Choisissez l'année</p>
+            <button onclick="selectYear('2021')">2021</button>
+            <button onclick="selectYear('2022')">2022</button>
+            <button onclick="selectYear('2023')">2023</button>
+            <button onclick="selectYear('2024')">2024</button>
+        </div>
+    </div>
+
+    <!-- Modal for Exam/Devoir Selection -->
+    <div id="examModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('examModal')">&times;</span>
+            <p id="examModalText">Choisissez l'épreuve</p>
+            <a id="devoirLink" href="#" download>Devoir</a>
+            <a id="examenLink" href="#" download>Examen</a>
+        </div>
+    </div>
+
+    <script>
+        let selectedSubject = '';
+        let selectedYear = '';
+
+        const pdfPaths = {
+            "Programmation Système": {
+                "2021": { "devoir": "pdf/Creation_Entreprise_2021_devoir.pdf", "examen": "pdf/Creation_Entreprise_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Creation_Entreprise_2022_devoir.pdf", "examen": "pdf/Creation_Entreprise_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Creation_Entreprise_2023_devoir.pdf", "examen": "pdf/Creation_Entreprise_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Creation_Entreprise_2024_devoir.pdf", "examen": "pdf/Creation_Entreprise_2024_examen.pdf" }
+            },
+            "Système d'exploitation avancée(Linux)": {
+                "2021": { "devoir": "pdf/Droit_Travail_2021_devoir.pdf", "examen": "pdf/Droit_Travail_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Droit_Travail_2022_devoir.pdf", "examen": "pdf/Droit_Travail_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Droit_Travail_2023_devoir.pdf", "examen": "pdf/Droit_Travail_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Droit_Travail_2024_devoir.pdf", "examen": "pdf/Droit_Travail_2024_examen.pdf" }
+            },
+            "Réseaux et Technologie CISCO CCNA 3": {
+                "2021": { "devoir": "pdf/Programmation_Objet_Oriente_Avance_2021_devoir.pdf", "examen": "pdf/Programmation_Objet_Oriente_Avance_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Programmation_Objet_Oriente_Avance_2022_devoir.pdf", "examen": "pdf/Programmation_Objet_Oriente_Avance_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Programmation_Objet_Oriente_Avance_2023_devoir.pdf", "examen": "pdf/Programmation_Objet_Oriente_Avance_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Programmation_Objet_Oriente_Avance_2024_devoir.pdf", "examen": "pdf/Programmation_Objet_Oriente_Avance_2024_examen.pdf" }
+            },
+            "Huawei Certification Network Association": {
+                "2021": { "devoir": "pdf/Outils_Programmation_Web_2021_devoir.pdf", "examen": "pdf/Outils_Programmation_Web_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Outils_Programmation_Web_2022_devoir.pdf", "examen": "pdf/Outils_Programmation_Web_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Outils_Programmation_Web_2023_devoir.pdf", "examen": "pdf/Outils_Programmation_Web_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Outils_Programmation_Web_2024_devoir.pdf", "examen": "pdf/Outils_Programmation_Web_2024_examen.pdf" }
+            },
+            "Administration des Réseaux": {
+                "2021": { "devoir": "pdf/Audit_Systemes_Informations_2021_devoir.pdf", "examen": "pdf/Audit_Systemes_Informations_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Audit_Systemes_Informations_2022_devoir.pdf", "examen": "pdf/Audit_Systemes_Informations_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Audit_Systemes_Informations_2023_devoir.pdf", "examen": "pdf/Audit_Systemes_Informations_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Audit_Systemes_Informations_2024_devoir.pdf", "examen": "pdf/Audit_Systemes_Informations_2024_examen.pdf" }
+            },
+            "Administration des Systèmes": {
+                "2021": { "devoir": "pdf/Techniques_Multimedia_Infographie_2021_devoir.pdf", "examen": "pdf/Techniques_Multimedia_Infographie_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Techniques_Multimedia_Infographie_2022_devoir.pdf", "examen": "pdf/Techniques_Multimedia_Infographie_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Techniques_Multimedia_Infographie_2023_devoir.pdf", "examen": "pdf/Techniques_Multimedia_Infographie_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Techniques_Multimedia_Infographie_2024_devoir.pdf", "examen": "pdf/Techniques_Multimedia_Infographie_2024_examen.pdf" }
+            },
+            "Big Data": {
+                "2021": { "devoir": "pdf/Sport_2021_devoir.pdf", "examen": "pdf/Sport_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Sport_2022_devoir.pdf", "examen": "pdf/Sport_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Sport_2023_devoir.pdf", "examen": "pdf/Sport_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Sport_2024_devoir.pdf", "examen": "pdf/Sport_2024_examen.pdf" }
+            },
+            "Sécurité des Réseaux": {
+                "2021": { "devoir": "pdf/Seminaire_Thematiques3_Discipline_2021_devoir.pdf", "examen": "pdf/Seminaire_Thematiques3_Discipline_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Seminaire_Thematiques3_Discipline_2022_devoir.pdf", "examen": "pdf/Seminaire_Thematiques3_Discipline_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Seminaire_Thematiques3_Discipline_2023_devoir.pdf", "examen": "pdf/Seminaire_Thematiques3_Discipline_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Seminaire_Thematiques3_Discipline_2024_devoir.pdf", "examen": "pdf/Seminaire_Thematiques3_Discipline_2024_examen.pdf" }
+            },
+            "Anglais Expert": {
+                "2021": { "devoir": "pdf/Projet_Fin_Formation_2021_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Projet_Fin_Formation_2022_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Projet_Fin_Formation_2023_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Projet_Fin_Formation_2024_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2024_examen.pdf" }
+            },
+            "Préparation au TOEIC": {
+                "2021": { "devoir": "pdf/Projet_Fin_Formation_2021_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Projet_Fin_Formation_2022_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Projet_Fin_Formation_2023_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Projet_Fin_Formation_2024_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2024_examen.pdf" }
+            },
+            "Developpement Personnel": {
+                "2021": { "devoir": "pdf/Projet_Fin_Formation_2021_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2021_examen.pdf" },
+                "2022": { "devoir": "pdf/Projet_Fin_Formation_2022_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2022_examen.pdf" },
+                "2023": { "devoir": "pdf/Projet_Fin_Formation_2023_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2023_examen.pdf" },
+                "2024": { "devoir": "pdf/Projet_Fin_Formation_2024_devoir.pdf", "examen": "pdf/Projet_Fin_Formation_2024_examen.pdf" }
+            }
+
+        };
+
+        function selectSubject(subject) {
+            selectedSubject = subject;
+            document.getElementById('yearModal').style.display = 'block';
+        }
+
+        function selectYear(year) {
+            selectedYear = year;
+            closeModal('yearModal');
+            document.getElementById('examModalText').innerText = `Choisissez l'épreuve pour ${selectedSubject.replace(/_/g, ' ')} (${selectedYear})`;
+            document.getElementById('devoirLink').href = pdfPaths[selectedSubject][selectedYear]["devoir"];
+            document.getElementById('examenLink').href = pdfPaths[selectedSubject][selectedYear]["examen"];
+            document.getElementById('examModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('yearModal')) {
+                closeModal('yearModal');
+            } else if (event.target == document.getElementById('examModal')) {
+                closeModal('examModal');
+            }
+        }
+        <!-- Bouton pour retourner à la page précédente -->
+     function goBack() {
+        window.history.back();
+        }
+    </script>
+</body>
+</html>

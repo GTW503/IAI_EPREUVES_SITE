@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+    <style>
+        .container {
+            position: relative;
+            text-align: center;
+        }
+
+        .background-clip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .content {
+            padding-top: 100px;
+        }
+
+        .content h1 {
+            margin-bottom: 20px;
+        }
+
+        .content a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        .content a:hover {
+            background-color: #ccc;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        @media only screen and (max-width: 600px) {
+            .content a {
+                font-size: 1em;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.history.back()" style="padding: 10px 20px; margin-top: 20px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer;">Retour</button>
+    
+    <div class="container">
+
+        <video autoplay loop muted plays-inline class="background-clip">
+            <source src="images/video.mp4" type="video/mp4">
+        </video>
+
+        <div class="content">
+            <a href="g.html">GLSI(Génie Logiciel et Système d'Informations)</a>
+            <a href="a.html">ASR(Administration Système et Réseau)</a>
+        </div>
+    </div>
+    <script>
+     <!-- Bouton pour retourner à la page précédente -->
+     function goBack() {
+        window.history.back();
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Documents</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .background-clip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px 0;
+        }
+
+        .content a {
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .content a:hover {
+            background-color: #e0e0e0;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .modal-content button,
+        .modal-content a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .modal-content button:hover,
+        .modal-content a:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.history.back()" style="padding: 10px 20px; margin-top: 20px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer;">Retour</button>
+    
+    <div class="container">
+
+        <video autoplay loop muted plays-inline class="background-clip">
+            <source src="images/video.mp4" type="video/mp4">
+        </video>
+
+        <div class="content">
+            <a href="#" onclick="selectSubject('Initiation_programmation_web')">Initiation à la programmation web</a>
+            <a href="#" onclick="selectSubject('Initiation_programmation_objet')">Initiation à la programmation objet</a>
+            <a href="#" onclick="selectSubject('Conception_implémentation_SD')">Conception et implémentation des SD</a>
+            <a href="#" onclick="selectSubject('Réseaux_technologie_Cisco_CCNA1a')">Réseaux et technologie Cisco CCNA1a</a>
+            <a href="#" onclick="selectSubject('Réseaux_technologie_Cisco_CCNA1b')">Réseaux et technologie Cisco CCNA1b</a>
+            <a href="#" onclick="selectSubject('Initiation_bases_de_données')">Initiation aux bases de données</a>
+            <a href="#" onclick="selectSubject('Pratiques_SQL')">Pratiques SQL</a>
+            <a href="#" onclick="selectSubject('Environnement_économique')">Environnement économique</a>
+            <a href="#" onclick="selectSubject('Comptabilité_générale')">Comptabilité générale</a>
+            <a href="#" onclick="selectSubject('Projet_professionnel_séminaire')">Projet professionnel et séminaire thématiques1 + discipline</a>
+            <a href="#" onclick="selectSubject('Sport')">Sport</a>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="yearModal" class="modal">
+        <div class="modal-content">
+            <h3>Choisissez une année</h3>
+            <button onclick="selectYear('2021')">2021</button>
+            <button onclick="selectYear('2022')">2022</button>
+            <button onclick="selectYear('2023')">2023</button>
+            <button onclick="selectYear('2024')">2024</button>
+            <button onclick="closeModal('yearModal')">Fermer</button>
+        </div>
+    </div>
+
+    <div id="examModal" class="modal">
+        <div class="modal-content">
+            <h3>Choisissez le type d'épreuve</h3>
+            <a id="devoirLink" href="#" target="_blank">Devoir</a>
+            <a id="examenLink" href="#" target="_blank">Examen</a>
+            <button onclick="closeModal('examModal')">Fermer</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedSubject;
+        let selectedYear;
+        
+        const pdfPaths = {
+            "Initiation_programmation_web": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/Initiation_programmation_web_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Initiation_programmation_web_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/Initiation_programmation_web_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Initiation_programmation_web_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/Initiation_programmation_web_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Initiation_programmation_web_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/Initiation_programmation_web_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Initiation_programmation_web_2024_examen.pdf" }
+            },
+            "Initiation à la programmation objet": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/Cloud_Computing_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Cloud_Computing_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/Cloud_Computing_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Cloud_Computing_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/Cloud_Computing_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Cloud_Computing_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/Cloud_Computing_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Cloud_Computing_2024_examen.pdf" }
+            },
+            "Conception et implémentation des SD": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/TIC_Management_Entreprise_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/TIC_Management_Entreprise_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/TIC_Management_Entreprise_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/TIC_Management_Entreprise_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/TIC_Management_Entreprise_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/TIC_Management_Entreprise_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/TIC_Management_Entreprise_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/TIC_Management_Entreprise_2024_examen.pdf" }
+            },
+            "Réseaux et technologie Cisco CCNA1a": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/Droit_TIC_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Droit_TIC_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/Droit_TIC_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Droit_TIC_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/Droit_TIC_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Droit_TIC_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/Droit_TIC_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Droit_TIC_2024_examen.pdf" }
+            },
+            "Réseaux et technologie Cisco CCNA1b": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/Sport_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Sport_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/Sport_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Sport_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/Sport_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Sport_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/Sport_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Sport_2024_examen.pdf" }
+            },
+            "Initiation aux bases de données": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/Seminaire_Thematique_2_Discipline_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Seminaire_Thematique_2_Discipline_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/Seminaire_Thematique_2_Discipline_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Seminaire_Thematique_2_Discipline_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/Seminaire_Thematique_2_Discipline_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Seminaire_Thematique_2_Discipline_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/Seminaire_Thematique_2_Discipline_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Seminaire_Thematique_2_Discipline_2024_examen.pdf" }
+            },
+            "Pratiques SQL": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2024_examen.pdf" }
+            },
+            "Environnement économique": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2024_examen.pdf" }
+            },
+            "Comptabilité générale": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2024_examen.pdf" }
+            },
+            "Projet professionnel et séminaire thématiques1 + discipline": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2024_examen.pdf" }
+            },
+            "Sport": {
+                "2021": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2021_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2021_examen.pdf" },
+                "2022": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2022_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2022_examen.pdf" },
+                "2023": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2023_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2023_examen.pdf" },
+                "2024": { "devoir": "EpreuvesL1/L1S2/DS2/Projet_Stage_2024_devoir.pdf", "examen": "EpreuvesL1/L1S2/PS2/Projet_Stage_2024_examen.pdf" }
+            }
+        };
+
+        function selectSubject(subject) {
+            selectedSubject = subject;
+            document.getElementById('yearModal').style.display = 'block';
+        }
+
+        function selectYear(year) {
+            selectedYear = year;
+            document.getElementById('yearModal').style.display = 'none';
+            document.getElementById('examModal').style.display = 'block';
+
+            document.getElementById('devoirLink').href = pdfPaths[selectedSubject][selectedYear]['devoir'];
+            document.getElementById('examenLink').href = pdfPaths[selectedSubject][selectedYear]['examen'];
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        <!-- Bouton pour retourner à la page précédente -->
+     function goBack() {
+        window.history.back();
+        }
+    </script>
+</body>
+</html>
+

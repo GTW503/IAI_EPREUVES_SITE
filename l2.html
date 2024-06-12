@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+    
+        .container {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+    
+        .background-clip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+    
+        .content {
+            color: white;
+            z-index: 1;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 200px;
+        }
+    
+        #typewriter-text p {
+            white-space: nowrap;
+            overflow: hidden;
+            font-size: 2em;
+            display: inline-block;
+            animation: typing 4s steps(40, end) forwards, blink-caret .75s step-end infinite;
+            margin-bottom: 30px;
+        }
+    
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+    
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: orange; }
+        }
+    
+        a {
+            color: white;
+            text-decoration: none;
+            margin: 10px;
+            padding: 10px 20px;
+            border: 1px solid white;
+            border-radius: 50px; /* Arrondir les liens */
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+    
+        a:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(255, 255, 255, 0.15);
+            transition: all 0.75s;
+            border-radius: 50%;
+            z-index: -1;
+            transform: translate(-50%, -50%) scale(0);
+            background: #4a90e2; /* Bleu moyen chic */
+           color: white; /* Modifier la couleur du texte en blanc */
+           box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); 
+        }
+    
+        a:hover:before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    
+        a:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+    
+        @media (max-width: 768px) {
+            #typewriter-text p {
+                font-size: 1.5em;
+            }
+    
+            a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }
+    
+        @media (max-width: 480px) {
+            #typewriter-text p {
+                font-size: 1.2em;
+            }
+    
+            a {
+                font-size: 0.8em;
+                padding: 5px 10px;
+            }
+            a:nth-child(2):hover {
+                z-index: 2; /* Place le bouton du semestre 5 au-dessus */
+            }
+            
+            a:nth-child(3):hover {
+                z-index: 1; /* Place le bouton du semestre 6 en dessous */
+            }
+            
+        }
+    </style>
+    
+</head>
+<body>
+    <button onclick="window.history.back()" style="padding: 10px 20px; margin-top: 20px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer;">Retour</button>
+    <div class="container">
+        <video autoplay loop muted playsinline class="background-clip">
+            <source src="images/video.mp4" type="video/mp4">
+        </video>
+        <div class="content">
+            <div id="typewriter-text">
+                <p>Bienvenue sur</p>
+                <p>la page de </p>
+                <p>épreuves dédiée</p> 
+                <p>aux deuxièmes</p> 
+                <p>années</p>
+            </div>
+            <a href="s4.html">Semestre4</a>
+            <a href="s5.html">Semestre5</a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const paragraphs = document.querySelectorAll('#typewriter-text p');
+            paragraphs.forEach((p, index) => {
+                const text = p.textContent;
+                p.textContent = '';
+                let i = 0;
+                function typeWriter() {
+                    if (i < text.length) {
+                        p.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(typeWriter, 100);
+                    }
+                }
+                setTimeout(typeWriter, index * 2000); // Déclenche l'animation avec un délai pour chaque ligne
+            });
+        });
+
+        function adjustStyles() {
+            const container = document.querySelector('.container');
+            const content = document.querySelector('.content');
+            const video = document.querySelector('.background-clip');
+            const links = document.querySelectorAll('a');
+            const h1 = document.querySelector('h1');
+
+            if (window.innerWidth <= 768) {
+                content.style.padding = '15px';
+                content.style.borderRadius = '10px';
+                links.forEach(link => {
+                    link.style.fontSize = '0.9em';
+                    link.style.padding = '8px 15px';
+                });
+            } else if (window.innerWidth <= 480) {
+                content.style.padding = '10px';
+                content.style.borderRadius = '5px';
+                links.forEach(link => {
+                    link.style.fontSize = '0.8em';
+                    link.style.padding = '5px 10px';
+                });
+            } else {
+                content.style.padding = '20px';
+                content.style.borderRadius = '15px';
+                links.forEach(link => {
+                    link.style.fontSize = '1em';
+                    link.style.padding = '10px 20px';
+                });
+            }
+        }
+
+        window.addEventListener('resize', adjustStyles);
+        window.addEventListener('DOMContentLoaded', adjustStyles);
+        <!-- Bouton pour retourner à la page précédente -->
+        function goBack() {
+        window.history.back();
+        }
+    </script>
+</body>
+</html>
